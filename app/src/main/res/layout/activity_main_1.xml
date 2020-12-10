@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.bullfrog.multinestedlayout.view.MultiNestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nsv"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="false"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/vTop"
+            android:layout_height="250dp"
+            android:layout_width="match_parent"
+            android:background="@color/teal_200"/>
+
+<!--        <com.bullfrog.layoutmanagerdemo.view.SmoothScrollView-->
+<!--            android:id="@+id/nsv2"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:fillViewport="false">-->
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical">-->
+
+                <TextView
+                    android:id="@+id/tvSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="128dp"
+                    android:text="Search"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:background="@android:color/holo_orange_light"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:id="@+id/tvRvTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="32sp"
+                    android:textColor="@color/white"
+                    android:text="Title"
+                    android:gravity="center"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:background="@android:color/holo_purple"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:listitem="@layout/rv_item_layout"/>
+
+<!--            </LinearLayout>-->
+
+<!--        </com.bullfrog.layoutmanagerdemo.view.SmoothScrollView>-->
+
+    </LinearLayout>
+
+</com.bullfrog.multinestedlayout.view.MultiNestedScrollView>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.bullfrog.multinestedlayout.view.SmoothScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nsv"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="false"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="vertical">
+        <View
+            android:id="@+id/vTop"
+            android:layout_height="250dp"
+            android:layout_width="match_parent"
+            android:background="@color/teal_200"/>
+
+        <TextView
+            android:id="@+id/tvRvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="32sp"
+            android:textColor="@color/white"
+            android:text="Title"
+            android:gravity="center"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:background="@android:color/holo_purple"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="true"
+            tools:listitem="@layout/rv_item_layout"/>
+
+    </LinearLayout>
+
+</com.bullfrog.multinestedlayout.view.SmoothScrollView>

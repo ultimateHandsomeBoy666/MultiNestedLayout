@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.bullfrog.multinestedlayout.view.MultiNestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nsv"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/vTop"
+            android:layout_height="250dp"
+            android:layout_width="match_parent"
+            android:background="@color/teal_200"/>
+
+        <com.bullfrog.multinestedlayout.view.MultiNestedScrollView
+            android:id="@+id/nsv2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="128dp"
+                    android:text="Search"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:background="@android:color/holo_orange_light"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+                    app:layout_constraintTop_toTopOf="@id/nsv2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <TextView
+                    android:id="@+id/tvRvTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="32sp"
+                    android:textColor="@color/white"
+                    android:text="Title"
+                    android:gravity="center"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:background="@android:color/holo_purple"
+                    app:layout_constraintTop_toBottomOf="@id/tvSearch"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="900dp"
+                    tools:listitem="@layout/rv_item_layout"
+                    app:layout_constraintTop_toBottomOf="@id/tvRvTitle"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+            </LinearLayout>
+
+        </com.bullfrog.multinestedlayout.view.MultiNestedScrollView>
+
+    </LinearLayout>
+
+</com.bullfrog.multinestedlayout.view.MultiNestedScrollView>
