@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MultiNestedScrollView">
+        <attr name="forceDisplayHeight" format="boolean"/>
+        <attr name="priority" format="integer"/>
+    </declare-styleable>
+</resources>

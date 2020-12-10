@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bullfrog.layoutmanagerdemo.data.Item
@@ -31,10 +32,13 @@ class MainActivity : AppCompatActivity() {
 
         rv.post {
             nsv.topHeight = vTop.height - 200
-            nsv2.topHeight = tvSearch.height - 200
 
-            Log.d("test", "rv height = ${rv.height}, nsv height = ${nsv.height}, nsv2 height = ${nsv2.height}," +
-                    "tvRvTitle height = ${tvRvTitle.height}")
+            nsv2.topHeight = tvSearch.height - 200
+//            val params = nsv2.layoutParams as LinearLayout.LayoutParams
+//            params.height = nsv.height
+//            nsv2.layoutParams = params
+
+
 //
 //            val params = rv.layoutParams as LinearLayout.LayoutParams
 ////            params.height = nsv.height - tvRvTitle.height
@@ -42,5 +46,10 @@ class MainActivity : AppCompatActivity() {
 //            rv.layoutParams = params
 
         }
+
+        rv.postDelayed({
+            Log.d("test", "rv height = ${rv.height}, nsv height = ${nsv.height}, nsv2 height = ${nsv2.height}," +
+                    "tvRvTitle height = ${tvRvTitle.height}")
+        }, 2000)
     }
 }

@@ -1,25 +1,27 @@
 package com.bullfrog.multinestedlayout.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.NestedScrollingChild2;
 import androidx.core.view.NestedScrollingParent2;
+
+import com.bullfrog.multinestedlayout.utils.ScreenUtilKt;
 
 public class MultiNestedScrollView extends ScrollView implements NestedScrollingParent2, NestedScrollingChild2 {
 
     private int mTopHeight;
+    private boolean mForceDisplayHeight = true;
+    private int mPriority;
 
     private MultiNestedScrollingHelper mHelper = new MultiNestedScrollingHelper(this);
 
@@ -41,6 +43,19 @@ public class MultiNestedScrollView extends ScrollView implements NestedScrolling
     private void init() {
         Log.d("test", "cur view id is" + getTag());
         setNestedScrollingEnabled(true);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (mForceDisplayHeight) {
+            Activity activity = (Activity) getContext();
+            // force height to be screen height, excluding status bar height and nav bar height
+            int height = ScreenUtilKt.getDisplayHeight(activity);
+            int width = MeasureSpec.getSize(widthMeasureSpec);
+            setMeasuredDimension(width, height);
+        } else {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        }
     }
 
     // as parent
@@ -126,6 +141,22 @@ public class MultiNestedScrollView extends ScrollView implements NestedScrolling
     public void setTopHeight(int mTopHeight) {
         this.mTopHeight = mTopHeight;
         mHelper.setTopHeight(mTopHeight);
+    }
+
+    public boolean isForceScreenHeight() {
+        return mForceDisplayHeight;
+    }
+
+    public void setForceScreenHeight(boolean mForceScreenHeight) {
+        this.mForceDisplayHeight = mForceScreenHeight;
+    }
+
+    public int getPriority() {
+        return mPriority;
+    }
+
+    public void setPriority(int mPriority) {
+        this.mPriority = mPriority;
     }
 
     public MultiNestedScrollingHelper getHelper() {
