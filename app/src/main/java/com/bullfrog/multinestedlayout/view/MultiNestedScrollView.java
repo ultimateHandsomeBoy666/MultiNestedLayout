@@ -2,11 +2,12 @@ package com.bullfrog.multinestedlayout.view;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
@@ -14,34 +15,41 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.view.NestedScrollingChild2;
 import androidx.core.view.NestedScrollingParent2;
+import androidx.core.view.NestedScrollingParent3;
 
+import com.bullfrog.multinestedlayout.R;
 import com.bullfrog.multinestedlayout.utils.ScreenUtilKt;
 
 public class MultiNestedScrollView extends ScrollView implements NestedScrollingParent2, NestedScrollingChild2 {
 
     private int mTopHeight;
-    private boolean mForceDisplayHeight = true;
-    private int mPriority;
+    private boolean mForceDisplayHeight;
+    private int mScrollUpPriority;
+    private int mScrollDownPriority;
 
     private MultiNestedScrollingHelper mHelper = new MultiNestedScrollingHelper(this);
 
     public MultiNestedScrollView(Context context) {
-        super(context);
-        init();
+        this(context, null);
     }
 
     public MultiNestedScrollView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
+        this(context, attrs, 0);
     }
 
     public MultiNestedScrollView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
+
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MultiNestedScrollView);
+        mTopHeight = a.getDimensionPixelSize(R.styleable.MultiNestedScrollView_topHeight, 0);
+        mScrollUpPriority = a.getInteger(R.styleable.MultiNestedScrollView_scrollUpPriority, 0);
+        mScrollDownPriority = a.getInteger(R.styleable.MultiNestedScrollView_scrollDownPriority, 0);
+        mForceDisplayHeight = a.getBoolean(R.styleable.MultiNestedScrollView_forceDisplayHeight, true);
+        a.recycle();
     }
 
     private void init() {
-        Log.d("test", "cur view id is" + getTag());
         setNestedScrollingEnabled(true);
     }
 
@@ -51,8 +59,8 @@ public class MultiNestedScrollView extends ScrollView implements NestedScrolling
             Activity activity = (Activity) getContext();
             // force height to be screen height, excluding status bar height and nav bar height
             int height = ScreenUtilKt.getDisplayHeight(activity);
-            int width = MeasureSpec.getSize(widthMeasureSpec);
-            setMeasuredDimension(width, height);
+            int newHeightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+            super.onMeasure(widthMeasureSpec, newHeightMeasureSpec);
         } else {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
@@ -151,12 +159,12 @@ public class MultiNestedScrollView extends ScrollView implements NestedScrolling
         this.mForceDisplayHeight = mForceScreenHeight;
     }
 
-    public int getPriority() {
-        return mPriority;
+    public int getScrollUpPriority() {
+        return mScrollUpPriority;
     }
 
-    public void setPriority(int mPriority) {
-        this.mPriority = mPriority;
+    public void setScrollUpPriority(int mPriority) {
+        this.mScrollUpPriority = mPriority;
     }
 
     public MultiNestedScrollingHelper getHelper() {
@@ -166,5 +174,13 @@ public class MultiNestedScrollView extends ScrollView implements NestedScrolling
     @Override
     public boolean isNestedScrollingEnabled() {
         return true;
+    }
+
+    public int getScrollDownPriority() {
+        return mScrollDownPriority;
+    }
+
+    public void setScrollDownPriority(int scrollDownPriority) {
+        mScrollDownPriority = scrollDownPriority;
     }
 }

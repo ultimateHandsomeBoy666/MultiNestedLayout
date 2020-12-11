@@ -205,8 +205,6 @@ public class MultiNestedScrollingHelper {
         dispatchNestedPreScroll(dx, dy, consumed, null, type);
         if ((hideTop || showTop) && isNestedScrollEnabled()) {
             Log.d("onNestedPreScroll multi", "dy - consumed[1] = " + (dy - consumed[1]));
-            // 可以在这里判断 scroll 的边界，不要在 view 里面重写 scrollTo 方法
-            // 待补充判断。。。
             mMultiNestedScrollView.scrollBy(0, dy - consumed[1]);
             consumed[1] = dy;
         }

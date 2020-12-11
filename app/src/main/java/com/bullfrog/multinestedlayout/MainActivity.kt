@@ -31,25 +31,25 @@ class MainActivity : AppCompatActivity() {
         rv.adapter = adapter
 
         rv.post {
-            nsv.topHeight = vTop.height - 200
+            nsv.topHeight = vTop.height
 
-            nsv2.topHeight = tvSearch.height - 200
+            nsv2.topHeight = tvSearch.height
 //            val params = nsv2.layoutParams as LinearLayout.LayoutParams
 //            params.height = nsv.height
 //            nsv2.layoutParams = params
 
 
-//
+
 //            val params = rv.layoutParams as LinearLayout.LayoutParams
-////            params.height = nsv.height - tvRvTitle.height
-//            params.height = 2058
+//            params.height = nsv.height - tvRvTitle.height
+//            params.height = 2385
 //            rv.layoutParams = params
 
         }
 
         rv.postDelayed({
             Log.d("test", "rv height = ${rv.height}, nsv height = ${nsv.height}, nsv2 height = ${nsv2.height}," +
-                    "tvRvTitle height = ${tvRvTitle.height}")
+                    "tvRvTitle height = ${tvRvTitle.height}, tvSearch height = ${tvSearch.height}")
         }, 2000)
     }
 }

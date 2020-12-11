@@ -2,6 +2,8 @@
 <resources>
     <declare-styleable name="MultiNestedScrollView">
         <attr name="forceDisplayHeight" format="boolean"/>
-        <attr name="priority" format="integer"/>
+        <attr name="scrollUpPriority" format="integer"/>
+        <attr name="scrollDownPriority" format="integer"/>
+        <attr name="topHeight" format="dimension"/>
     </declare-styleable>
 </resources>
