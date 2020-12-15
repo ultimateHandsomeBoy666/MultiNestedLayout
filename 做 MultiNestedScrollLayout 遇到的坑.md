@@ -150,4 +150,13 @@
   
   正常来说，一般也要设置 RecyclerView 的高度为屏幕高度，因为大多数场景下 RecyclerView 会全部显示在整个屏幕上。然而在 xml 中没办法设置这个高度。如果重写 RecyclerView 的 `onMeasure`方法，这样侵入性太高了。
   
-  研究了一下 CoordinatorLayout ，发现 CoordinatorLayout  和其中的 RecyclerView 不管在 xml 中怎样设置高度，最终高度两者都一样。研究一下怎么做到的。。。。
+  研究了一下 CoordinatorLayout ，发现 CoordinatorLayout  和其中的 RecyclerView 不管在 xml 中怎样设置高度，最终高度两者都一样。
+  
+  研究了一下 CoordinatorLayout，发现并没有什么稀奇的地方，onMeasure 和 FrameLayout 基本一样。。。
+  
+  研究了很久 MeasureSpec.UNSPECIFIED，终于搞懂为什么内层的 MultiNestedScrollView 大小会包裹内部的 View 了！！因为内部的 MultiNestedScrollView 被嵌套在外部的 MultiNestedScrollView 内部，所以内部的 MultiNestedScrollView 的 measureSpecMode 是 MeasureSpec.UNSPECIFIED！！所以它会跟内部的 child 一样大！
+  
+  所以整个 MultiNestedScrollView 与一般的 CoordinatorLayout 不同的原因就在于多层嵌套！！！
+  
+  
+

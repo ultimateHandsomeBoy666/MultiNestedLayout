@@ -7,20 +7,24 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.NestedScrollingChild2;
 import androidx.core.view.NestedScrollingParent2;
 import androidx.core.view.NestedScrollingParent3;
+import androidx.core.widget.NestedScrollView;
 
 import com.bullfrog.multinestedlayout.R;
 import com.bullfrog.multinestedlayout.utils.ScreenUtilKt;
 
-public class MultiNestedScrollView extends ScrollView implements NestedScrollingParent2, NestedScrollingChild2 {
+public class MultiNestedScrollView extends LinearLayout implements NestedScrollingParent2, NestedScrollingChild2 {
 
     private int mTopHeight;
     private boolean mForceDisplayHeight;
@@ -51,10 +55,12 @@ public class MultiNestedScrollView extends ScrollView implements NestedScrolling
 
     private void init() {
         setNestedScrollingEnabled(true);
+        setOrientation(LinearLayout.VERTICAL);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        Log.d("onMeasure", "mode = " + Integer.toBinaryString(MeasureSpec.getMode(widthMeasureSpec)));
         if (mForceDisplayHeight) {
             Activity activity = (Activity) getContext();
             // force height to be screen height, excluding status bar height and nav bar height
@@ -63,6 +69,40 @@ public class MultiNestedScrollView extends ScrollView implements NestedScrolling
             super.onMeasure(widthMeasureSpec, newHeightMeasureSpec);
         } else {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        }
+    }
+
+    @Override
+    protected void measureChild(View child, int parentWidthMeasureSpec, int parentHeightMeasureSpec) {
+        if (child instanceof NestedScrollingChild2) {
+            ViewGroup.LayoutParams lp = child.getLayoutParams();
+            Activity activity = (Activity) getContext();
+
+            final int childWidthMeasureSpec = getChildMeasureSpec(parentWidthMeasureSpec, getPaddingLeft()
+                    + getPaddingRight(), lp.width);
+            final int childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(
+                    ScreenUtilKt.getDisplayHeight(activity), MeasureSpec.UNSPECIFIED);
+            child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+        } else {
+            super.measureChild(child, parentWidthMeasureSpec, parentHeightMeasureSpec);
+        }
+    }
+
+    @Override
+    protected void measureChildWithMargins(View child, int parentWidthMeasureSpec, int widthUsed,
+                                           int parentHeightMeasureSpec, int heightUsed) {
+        if (child instanceof  NestedScrollingChild2) {
+            MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
+            Activity activity = (Activity) getContext();
+
+            final int childWidthMeasureSpec = getChildMeasureSpec(parentWidthMeasureSpec,
+                    getPaddingLeft() + getPaddingRight() + lp.leftMargin + lp.rightMargin
+                            + widthUsed, lp.width);
+            final int childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(
+                    ScreenUtilKt.getDisplayHeight(activity), MeasureSpec.UNSPECIFIED);
+            child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+        } else {
+            super.measureChildWithMargins(child, parentWidthMeasureSpec, widthUsed, parentHeightMeasureSpec, heightUsed);
         }
     }
 
