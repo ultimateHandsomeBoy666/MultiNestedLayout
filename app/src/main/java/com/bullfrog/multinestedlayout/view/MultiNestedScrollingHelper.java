@@ -16,17 +16,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-/**
- * 暂时不与其他 NestedScrollingParent 兼容
- */
 public class MultiNestedScrollingHelper {
 
     private int[] mTempNestedScrollConsumed;
-    private ViewGroup mMultiNestedScrollView;
-
-    private HashMap<Integer, ViewParent> mPriorityParentMap = new HashMap<>();
-
+    private final ViewGroup mMultiNestedScrollView;
     private int mTopHeight;
+
+
 
     public MultiNestedScrollingHelper(ViewGroup viewGroup) {
         mMultiNestedScrollView = viewGroup;

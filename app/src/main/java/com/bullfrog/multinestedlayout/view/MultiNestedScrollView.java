@@ -2,6 +2,7 @@ package com.bullfrog.multinestedlayout.view;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -16,13 +17,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.NestedScrollingChild2;
 import androidx.core.view.NestedScrollingParent2;
 import androidx.core.view.NestedScrollingParent3;
+import androidx.core.view.ViewCompat;
 import androidx.core.widget.NestedScrollView;
 
 import com.bullfrog.multinestedlayout.R;
 import com.bullfrog.multinestedlayout.utils.ScreenUtilKt;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.PriorityQueue;
 
 public class MultiNestedScrollView extends LinearLayout implements NestedScrollingParent2, NestedScrollingChild2 {
 
@@ -43,6 +50,7 @@ public class MultiNestedScrollView extends LinearLayout implements NestedScrolli
 
     public MultiNestedScrollView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
         init();
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MultiNestedScrollView);
@@ -56,6 +64,14 @@ public class MultiNestedScrollView extends LinearLayout implements NestedScrolli
     private void init() {
         setNestedScrollingEnabled(true);
         setOrientation(LinearLayout.VERTICAL);
+    }
+
+    private void initPriorityMap(AttributeSet attrs) {
+
+        int layoutResId = ((XmlBlock.Parser) attrs).getSourceResId();
+        int id = getRootView()
+        PriorityQueue<MultiNestedScrollView> priorityQueue =
+        // put this ViewGroup into the priorityQueue of the static member priorityMap of this class
     }
 
     @Override
