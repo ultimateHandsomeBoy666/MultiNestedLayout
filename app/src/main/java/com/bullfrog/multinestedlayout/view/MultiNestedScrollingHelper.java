@@ -20,17 +20,16 @@ public class MultiNestedScrollingHelper {
 
     private int[] mTempNestedScrollConsumed;
     private final ViewGroup mMultiNestedScrollView;
+    // mTopHeight 应该在 onSizeChanged 里面进行计算
     private int mTopHeight;
-
-
 
     public MultiNestedScrollingHelper(ViewGroup viewGroup) {
         mMultiNestedScrollView = viewGroup;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean startNestedScroll(@ViewCompat.ScrollAxis int axes, @ViewCompat.NestedScrollType int type) {
-        if (mPriorityParentMap.size() != 0) {
+        if (MultiNestedPriorityHelper.getInstance().scrollUpPriorityMapSize() != 0 &&
+            MultiNestedPriorityHelper.getInstance().scrollDownPriorityMapSize() != 0) {
             return true;
         }
         if (isNestedScrollEnabled()) {
@@ -51,14 +50,12 @@ public class MultiNestedScrollingHelper {
         return false;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed, int dxUnconsumed,
                                         int dyUnconsumed, @Nullable int[] offsetInWindow,
                                         @ViewCompat.NestedScrollType int type) {
         return dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, offsetInWindow, type, null);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed, int dxUnconsumed,
                                         int dyUnconsumed, @Nullable int[] offsetInWindow,
                                         @ViewCompat.NestedScrollType int type,
@@ -66,7 +63,6 @@ public class MultiNestedScrollingHelper {
         return dispatchNestedScrollInternal(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, offsetInWindow, type, consumed);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean dispatchNestedScrollInternal(int dxConsumed, int dyConsumed, int dxUnconsumed,
                                                 int dyUnconsumed, @Nullable int[] offsetInWindow,
                                                 @ViewCompat.NestedScrollType int type,
@@ -105,13 +101,16 @@ public class MultiNestedScrollingHelper {
         return false;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean dispatchNestedPreScroll(int dx, int dy, @Nullable int[] consumed,
                                            @Nullable int[] offsetInWindow,
                                            @ViewCompat.NestedScrollType int type) {
-        int maxPriority = mPriorityParentMap.size();
-        if (isNestedScrollEnabled() && maxPriority != 0) {
-            ViewParent p = mPriorityParentMap.get(maxPriority);
+        if (isNestedScrollEnabled()) {
+            ViewParent p;
+            if (dy > 0) {
+                p = MultiNestedPriorityHelper.getInstance().pollScrollUpPriority(mMultiNestedScrollView);
+            } else {
+                p = MultiNestedPriorityHelper.getInstance().pollScrollDownPriority(mMultiNestedScrollView);
+            }
             if (p == null) {
                 return false;
             }
@@ -159,19 +158,18 @@ public class MultiNestedScrollingHelper {
         return true;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void onNestedScrollAccepted(@NonNull View child, @NonNull View target, @ViewCompat.ScrollAxis int axes,
                                        @ViewCompat.NestedScrollType int type) {
+        // here to offer multiNestedScrollViews into priority queue, recursively
         if (isNestedScrollEnabled()) {
             ViewParent p = mMultiNestedScrollView.getParent();
             View curChild = mMultiNestedScrollView;
             while (p != null) {
                 if (p instanceof MultiNestedScrollView &&
                         ViewParentCompat.onStartNestedScroll(p, curChild, target, axes, type)) {
-                    // size + 1 代表 priority
-                    mPriorityParentMap.put(mPriorityParentMap.size() + 1, p);
+                    MultiNestedPriorityHelper.getInstance().offerScrollUpPriority((MultiNestedScrollView) p);
+                    MultiNestedPriorityHelper.getInstance().offerScrollDownPriority((MultiNestedScrollView) p);
                     ViewParentCompat.onNestedScrollAccepted(p, curChild, target, axes, type);
-                    mPriorityParentMap.putAll(((MultiNestedScrollView) p).getHelper().mPriorityParentMap);
                     break;
                 }
                 if (p instanceof View) {
@@ -188,40 +186,51 @@ public class MultiNestedScrollingHelper {
 
     public void onNestedScroll(@NonNull View target, int dxConsumed, int dyConsumed,
                         int dxUnconsumed, int dyUnconsumed, @ViewCompat.NestedScrollType int type) {
+    }
+
+    public void onNestedPreScroll(@NonNull View target, int dx, int dy, @NonNull int[] consumed,
+                                  @ViewCompat.NestedScrollType int type) {
+//        Log.d("onNestedPreScroll multi", "cur view is " + mMultiNestedScrollView.getId() + "" +
+//                " dy = " + dy + ", topHeight = " + mTopHeight + ", scrollY = " + mMultiNestedScrollView.getScrollY());
+//        boolean hideTop = mMultiNestedScrollView.getScrollY() < mTopHeight && dy > 0;
+//        boolean showTop = mMultiNestedScrollView.getScrollY() > 0 && dy < 0;
+////        dispatchNestedPreScroll(dx, dy, consumed, null, type);
+//        if ((hideTop || showTop) && isNestedScrollEnabled()) {
+//            Log.d("onNestedPreScroll multi", "dy - consumed[1] = " + (dy - consumed[1]));
+//            mMultiNestedScrollView.scrollBy(0, dy - consumed[1]);
+//            consumed[1] = dy;
+//        }
+
+        // NestedScroll triggers here
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void onNestedPreScroll(@NonNull View target, int dx, int dy, @NonNull int[] consumed,
-                                  @ViewCompat.NestedScrollType int type) {
+    public void onNestedPreScrollActual(int dx, int dy, @NonNull int[] consumed) {
         Log.d("onNestedPreScroll multi", "cur view is " + mMultiNestedScrollView.getId() + "" +
                 " dy = " + dy + ", topHeight = " + mTopHeight + ", scrollY = " + mMultiNestedScrollView.getScrollY());
         boolean hideTop = mMultiNestedScrollView.getScrollY() < mTopHeight && dy > 0;
         boolean showTop = mMultiNestedScrollView.getScrollY() > 0 && dy < 0;
-        dispatchNestedPreScroll(dx, dy, consumed, null, type);
         if ((hideTop || showTop) && isNestedScrollEnabled()) {
             Log.d("onNestedPreScroll multi", "dy - consumed[1] = " + (dy - consumed[1]));
-            mMultiNestedScrollView.scrollBy(0, dy - consumed[1]);
-            consumed[1] = dy;
+            mMultiNestedScrollView.scrollBy(0, dy);
+            consumed[1] += dy;
         }
     }
 
     public void onStopNestedScroll(@NonNull View target, @ViewCompat.NestedScrollType int type) {
-        Iterator<Map.Entry<Integer, ViewParent>> iterator = mPriorityParentMap.entrySet().iterator();
-        Log.d("onStopNestedScroll", "map size = " + mPriorityParentMap.size() + ", has next = " + iterator.hasNext());
-        while (iterator.hasNext()) {
-            ViewParent p = iterator.next().getValue();
-            ViewParentCompat.onStopNestedScroll(p, target, type);
-            iterator.remove();
-        }
+//        Iterator<Map.Entry<Integer, ViewParent>> iterator = mPriorityParentMap.entrySet().iterator();
+//        Log.d("onStopNestedScroll", "map size = " + mPriorityParentMap.size() + ", has next = " + iterator.hasNext());
+//        while (iterator.hasNext()) {
+//            ViewParent p = iterator.next().getValue();
+//            ViewParentCompat.onStopNestedScroll(p, target, type);
+//            iterator.remove();
+//        }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean isNestedScrollEnabled() {
         return mMultiNestedScrollView.isNestedScrollingEnabled();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void setNestedScrollEnabled(boolean enable) {
         mMultiNestedScrollView.setNestedScrollingEnabled(enable);
     }
@@ -239,14 +248,6 @@ public class MultiNestedScrollingHelper {
 
     public void setTopHeight(int topHeight) {
         mTopHeight = topHeight;
-    }
-
-    public HashMap<Integer, ViewParent> getPriorityParentMap() {
-        return mPriorityParentMap;
-    }
-
-    public void setPriorityParentMap(HashMap<Integer, ViewParent> priorityParentMap) {
-        mPriorityParentMap = priorityParentMap;
     }
 
     public ViewGroup getMultiNestedScrollView() {

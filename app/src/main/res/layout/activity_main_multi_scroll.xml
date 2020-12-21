@@ -6,7 +6,9 @@
     android:id="@+id/nsv"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:forceDisplayHeight="true">
+    app:forceDisplayHeight="true"
+    app:scrollUpPriority="2"
+    app:scrollDownPriority="2">
 
         <View
             android:id="@+id/vTop"
@@ -18,8 +20,9 @@
             android:id="@+id/nsv2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:forceDisplayHeight="true">
-
+            app:forceDisplayHeight="true"
+            app:scrollUpPriority="1"
+            app:scrollDownPriority="1">
 
                 <TextView
                     android:id="@+id/tvSearch"

@@ -31,9 +31,9 @@ class MainActivity : AppCompatActivity() {
         rv.adapter = adapter
 
         rv.post {
-            nsv.topHeight = vTop.height - 200
+            nsv.topHeight = vTop.height
 
-            nsv2.topHeight = tvSearch.height - 200
+            nsv2.topHeight = tvSearch.height
 //            val params = nsv2.layoutParams as LinearLayout.LayoutParams
 //            params.height = nsv.height
 //            nsv2.layoutParams = params

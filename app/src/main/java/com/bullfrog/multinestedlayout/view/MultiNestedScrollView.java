@@ -23,6 +23,7 @@ import androidx.core.view.NestedScrollingParent2;
 import androidx.core.view.NestedScrollingParent3;
 import androidx.core.view.ViewCompat;
 import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bullfrog.multinestedlayout.R;
 import com.bullfrog.multinestedlayout.utils.ScreenUtilKt;
@@ -64,14 +65,6 @@ public class MultiNestedScrollView extends LinearLayout implements NestedScrolli
     private void init() {
         setNestedScrollingEnabled(true);
         setOrientation(LinearLayout.VERTICAL);
-    }
-
-    private void initPriorityMap(AttributeSet attrs) {
-
-        int layoutResId = ((XmlBlock.Parser) attrs).getSourceResId();
-        int id = getRootView()
-        PriorityQueue<MultiNestedScrollView> priorityQueue =
-        // put this ViewGroup into the priorityQueue of the static member priorityMap of this class
     }
 
     @Override
@@ -133,7 +126,6 @@ public class MultiNestedScrollView extends LinearLayout implements NestedScrolli
         return mHelper.onStartNestedScroll(child, target, axes, type);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onNestedScrollAccepted(@NonNull View child, @NonNull View target, int axes, int type) {
         mHelper.onNestedScrollAccepted(child, target, axes, type);
@@ -145,10 +137,13 @@ public class MultiNestedScrollView extends LinearLayout implements NestedScrolli
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onNestedPreScroll(@NonNull View target, int dx, int dy, @NonNull int[] consumed, int type) {
         mHelper.onNestedPreScroll(target, dx, dy, consumed, type);
+    }
+
+    public void onNestedPreScrollActual(int dx, int dy, @NonNull int[] consumed) {
+        mHelper.onNestedPreScrollActual(dx, dy, consumed);
     }
 
     @Override
@@ -157,7 +152,6 @@ public class MultiNestedScrollView extends LinearLayout implements NestedScrolli
     }
 
     // as child
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public boolean startNestedScroll(int axes, int type) {
         return mHelper.startNestedScroll(axes, type);
@@ -173,19 +167,17 @@ public class MultiNestedScrollView extends LinearLayout implements NestedScrolli
         return false;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed, @Nullable int[] offsetInWindow, int type) {
         return mHelper.dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, offsetInWindow, type);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public boolean dispatchNestedPreScroll(int dx, int dy, @Nullable int[] consumed, @Nullable int[] offsetInWindow, int type) {
         return mHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow, type);
     }
 
-        @Override
+    @Override
     public void scrollTo(int x, int y) {
         if (y < 0) {
             y = 0;
